@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel | Rivalry Hub</title>
+    <style>
+        body { background: #141414; color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: #1f1f1f; padding: 40px; border-radius: 8px; width: 100%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); border-top: 4px solid #E50914; }
+        h2 { text-align: center; margin-bottom: 25px; letter-spacing: 1px; }
+        label { font-size: 0.8rem; color: #b3b3b3; }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0 18px 0; border-radius: 4px; border: 1px solid #333; background: #333; color: white; box-sizing: border-box; }
+        button { background: #E50914; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        button:disabled { background: #555; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Rivalry Admin</h2>
+        <form id="uploadForm">
+            <label>Video Title</label>
+            <input type="text" id="title" placeholder="e.g. Snow Angel" required>
+            
+            <label>Link (YouTube or TikTok)</label>
+            <input type="url" id="url" placeholder="Paste link here..." required>
+            
+            <label>Featured Actor</label>
+            <select id="actor">
+                <option value="Hudson">Hudson Williams</option>
+                <option value="Connor">Connor Storrie</option>
+                <option value="Both">Both (HudCon)</option>
+            </select>
+            
+            <label>Type (For YouTube Links Only)</label>
+            <select id="category">
+                <option value="Short Films">Short Films</option>
+                <option value="Interviews">Interviews</option>
+            </select>
+            
+            <button type="submit" id="btn">Update Hub</button>
+        </form>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWxheUIbo4UH1zY0r28bIMky5ndww1lueEhgEfkU8SG1JP3EYcqG_h_rUWmKblOiE9/exec";
+
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn');
+            btn.innerText = "Posting...";
+            btn.disabled = true;
+
+            const data = {
+                title: document.getElementById('title').value,
+                url: document.getElementById('url').value,
+                actor: document.getElementById('actor').value,
+                category: document.getElementById('category').value
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(data)
+            }).then(() => {
+                alert("Posted! Refresh your main site to see it.");
+                btn.innerText = "Update Hub";
+                btn.disabled = false;
+                document.getElementById('uploadForm').reset();
+            });
+        });
+    </script>
+</body>
+</html>
