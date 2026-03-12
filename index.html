@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3JD2E51JJG"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-3JD2E51JJG');
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rivalry Hub | Hudson & Connor</title>
@@ -40,10 +31,19 @@
 
         /* Rows */
         .row { padding: 20px 4%; transition: opacity 0.3s; }
-        .row h2 { font-size: 1.5rem; color: #e5e5e5; margin-bottom: 5px; border-left: 4px solid var(--accent-red); padding-left: 10px; }
-        .row-container { display: flex; overflow-x: auto; gap: 15px; padding: 20px 0; scrollbar-width: none; min-height: 100px; align-items: flex-start; }
+        .row-header { display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent-red); padding-left: 10px; margin-bottom: 5px; }
+        .row h2 { font-size: 1.5rem; color: #e5e5e5; margin: 0; }
+        
+        /* View More Button */
+        .view-more-btn { background: none; border: none; color: #aaa; cursor: pointer; font-weight: bold; font-size: 0.8rem; transition: 0.3s; }
+        .view-more-btn:hover { color: var(--text-white); }
+
+        .row-container { display: flex; overflow-x: auto; gap: 15px; padding: 20px 0; scrollbar-width: none; min-height: 100px; align-items: flex-start; transition: 0.5s; }
         .row-container::-webkit-scrollbar { display: none; }
         
+        /* Expand Logic */
+        .row-container.expanded { flex-wrap: wrap; overflow-x: hidden; }
+
         /* Cards */
         .card-wrapper { display: flex; flex-direction: column; opacity: 0; animation: fadeIn 0.8s forwards; flex-shrink: 0; }
         .video-card { min-width: 320px; height: 180px; background: #000; border-radius: 4px; transition: 0.4s; overflow: hidden; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
@@ -54,7 +54,8 @@
 
         @keyframes fadeIn { to { opacity: 1; } }
         
-        /* Hide class for search */
+        /* Helper Classes */
+        .hidden-item { display: none !important; }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -81,26 +82,40 @@
 
     <div id="loader"></div>
 
-    <section class="row" id="hudson">
-        <h2 class="category-title">Hudson Williams: Short Films</h2>
+    <section class="row">
+        <div class="row-header">
+            <h2>Hudson Williams: Short Films</h2>
+            <button class="view-more-btn" id="btn-hudson-short-films" onclick="toggleRow('hudson-short-films')">View More</button>
+        </div>
         <div class="row-container" id="hudson-short-films"></div>
-        <h2 class="category-title">Hudson Williams: Interviews</h2>
+
+        <div class="row-header">
+            <h2>Hudson Williams: Interviews</h2>
+            <button class="view-more-btn" id="btn-hudson-interviews" onclick="toggleRow('hudson-interviews')">View More</button>
+        </div>
         <div class="row-container" id="hudson-interviews"></div>
-       
     </section>
 
-    <section class="row" id="connor">
-        <h2 class="category-title">Connor Storrie: Short Films</h2>
+    <section class="row">
+        <div class="row-header">
+            <h2>Connor Storrie: Short Films</h2>
+            <button class="view-more-btn" id="btn-connor-short-films" onclick="toggleRow('connor-short-films')">View More</button>
+        </div>
         <div class="row-container" id="connor-short-films"></div>
-        <h2 class="category-title">Connor Storrie: Interviews</h2>
+
+        <div class="row-header">
+            <h2>Connor Storrie: Interviews</h2>
+            <button class="view-more-btn" id="btn-connor-interviews" onclick="toggleRow('connor-interviews')">View More</button>
+        </div>
         <div class="row-container" id="connor-interviews"></div>
-        
     </section>
 
-    <section class="row" id="hudcon">
-        <h2 class="category-title">HudCon: Joint YouTube Clips</h2>
+    <section class="row">
+        <div class="row-header">
+            <h2>HudCon: Joint YouTube Clips</h2>
+            <button class="view-more-btn" id="btn-both-youtube" onclick="toggleRow('both-youtube')">View More</button>
+        </div>
         <div class="row-container" id="both-youtube"></div>
-        
     </section>
 
     <script>
@@ -119,17 +134,30 @@
             return url;
         }
 
+        function toggleRow(id) {
+            const container = document.getElementById(id);
+            const btn = document.getElementById('btn-' + id);
+            const items = container.querySelectorAll('.card-wrapper');
+            
+            if (container.classList.contains('expanded')) {
+                container.classList.remove('expanded');
+                btn.innerText = "View More";
+                items.forEach((item, index) => {
+                    if (index >= 4) item.classList.add('hidden-item');
+                });
+            } else {
+                container.classList.add('expanded');
+                btn.innerText = "View Less";
+                items.forEach(item => item.classList.remove('hidden-item'));
+            }
+        }
+
         function filterContent() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             let cards = document.getElementsByClassName('card-wrapper');
-            
             for (let i = 0; i < cards.length; i++) {
                 let title = cards[i].querySelector('.video-title').innerText.toLowerCase();
-                if (title.includes(input)) {
-                    cards[i].classList.remove('hidden');
-                } else {
-                    cards[i].classList.add('hidden');
-                }
+                cards[i].classList.toggle('hidden', !title.includes(input));
             }
         }
 
@@ -155,19 +183,32 @@
 
                     const container = document.getElementById(rowId);
                     if (container) {
+                        const existingItems = container.querySelectorAll('.card-wrapper').length;
                         const cardClass = isTikTok ? "video-card tiktok-card" : "video-card";
                         let mediaHTML = isImage 
                             ? `<img src="${item.url}" loading="lazy">`
                             : `<iframe src="${cleanUrl(item.url)}" loading="lazy" allowfullscreen scrolling="no"></iframe>`;
 
+                        // Hide items past index 3 (item #4) initially
+                        const hideClass = existingItems >= 4 ? 'hidden-item' : '';
+
                         container.innerHTML += `
-                            <div class="card-wrapper">
+                            <div class="card-wrapper ${hideClass}">
                                 <div class="${cardClass}">
                                     ${mediaHTML}
                                 </div>
                                 <div class="video-title">${item.title}</div>
                             </div>
                         `;
+                    }
+                });
+
+                // Hide View More buttons if row has 4 or fewer items
+                ['hudson-short-films', 'hudson-interviews', 'connor-short-films', 'connor-interviews', 'both-youtube'].forEach(id => {
+                    const container = document.getElementById(id);
+                    if (container && container.querySelectorAll('.card-wrapper').length <= 4) {
+                        const btn = document.getElementById('btn-' + id);
+                        if (btn) btn.style.display = 'none';
                     }
                 });
             });
@@ -177,5 +218,4 @@
         });
     </script>
 </body>
-
 </html>
