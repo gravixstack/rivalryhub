@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-B8K5PV3D1W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-B8K5PV3D1W');
-</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B8K5PV3D1W"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-B8K5PV3D1W');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rivalry Hub | Hudson & Connor</title>
@@ -25,7 +23,7 @@
         .nav-links { display: flex; list-style: none; gap: 20px; padding: 0; margin: 0; }
         .nav-links a { color: #e5e5e5; text-decoration: none; font-size: 0.9rem; font-weight: bold; }
 
-        /* Search Bar Styling */
+        /* Search */
         .search-container { position: relative; display: flex; align-items: center; background: rgba(0,0,0,0.5); border: 1px solid #555; padding: 5px 10px; border-radius: 4px; }
         #searchInput { background: transparent; border: none; color: white; outline: none; width: 150px; transition: width 0.4s; font-size: 0.85rem; }
         #searchInput:focus { width: 250px; }
@@ -34,38 +32,32 @@
         .hero { height: 60vh; background: linear-gradient(to top, var(--main-bg), transparent), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2000') center/cover; display: flex; flex-direction: column; justify-content: center; padding: 0 4%; }
         .hero h1 { font-size: 4rem; margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
 
-        /* Loader */
-        #loader { display: block; margin: 50px auto; border: 5px solid #333; border-top: 5px solid var(--accent-red); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Photo Collection Style */
+        .collection-badge { position: absolute; bottom: 10px; right: 10px; background: var(--accent-red); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        .photo-stack { position: relative; cursor: pointer; }
+        .photo-stack::before { content: ''; position: absolute; top: -5px; left: 5px; width: 100%; height: 100%; background: #333; border-radius: 4px; z-index: -1; }
 
-        /* Rows */
-        .row { padding: 20px 4%; transition: opacity 0.3s; }
-        .row-header { display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent-red); padding-left: 10px; margin-bottom: 5px; }
-        .row h2 { font-size: 1.5rem; color: #e5e5e5; margin: 0; }
-        
-        /* View More Button */
-        .view-more-btn { background: none; border: none; color: #aaa; cursor: pointer; font-weight: bold; font-size: 0.8rem; transition: 0.3s; }
-        .view-more-btn:hover { color: var(--text-white); }
+        /* Overlay Viewer */
+        #viewer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        #viewer-content { display: flex; overflow-x: auto; gap: 20px; width: 90%; padding: 20px; scroll-snap-type: x mandatory; }
+        #viewer-content img { height: 70vh; scroll-snap-align: center; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .close-viewer { position: absolute; top: 30px; right: 30px; font-size: 2rem; color: white; cursor: pointer; background: none; border: none; }
 
-        .row-container { display: flex; overflow-x: auto; gap: 15px; padding: 20px 0; scrollbar-width: none; min-height: 100px; align-items: flex-start; transition: 0.5s; }
-        .row-container::-webkit-scrollbar { display: none; }
-        
-        /* Expand Logic */
+        /* Standard Rows */
+        .row { padding: 20px 4%; }
+        .row-header { display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent-red); padding-left: 10px; margin-bottom: 5px; margin-top: 20px; }
+        .row-container { display: flex; overflow-x: auto; gap: 15px; padding: 20px 0; scrollbar-width: none; min-height: 100px; align-items: flex-start; }
         .row-container.expanded { flex-wrap: wrap; overflow-x: hidden; }
-
-        /* Cards */
         .card-wrapper { display: flex; flex-direction: column; opacity: 0; animation: fadeIn 0.8s forwards; flex-shrink: 0; }
         .video-card { min-width: 320px; height: 180px; background: #000; border-radius: 4px; transition: 0.4s; overflow: hidden; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .video-card.tiktok-card { min-width: 200px; height: 350px; }
         .video-card:hover { transform: scale(1.05); z-index: 10; }
         .video-card iframe, .video-card img { width: 100%; height: 100%; border: none; display: block; object-fit: cover; }
         .video-title { font-size: 0.85rem; margin-top: 8px; color: #fff; font-weight: 500; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         @keyframes fadeIn { to { opacity: 1; } }
-        
-        /* Helper Classes */
+        #loader { display: block; margin: 50px auto; border: 5px solid #333; border-top: 5px solid var(--accent-red); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .hidden-item { display: none !important; }
-        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -91,132 +83,122 @@
 
     <div id="loader"></div>
 
-    <section class="row"  id="hudson">
-        <div class="row-header">
-            <h2>Hudson Williams: Short Films</h2>
-            <button class="view-more-btn" id="btn-hudson-short-films" onclick="toggleRow('hudson-short-films')">View More</button>
-        </div>
-        <div class="row-container" id="hudson-short-films"></div>
+    <div id="viewer-overlay">
+        <button class="close-viewer" onclick="closeViewer()">&times;</button>
+        <h2 id="viewer-title" style="margin-bottom: 20px;"></h2>
+        <div id="viewer-content"></div>
+        <p style="color: #666; margin-top: 15px;">Swipe or scroll to see more</p>
+    </div>
 
-        <div class="row-header">
-            <h2>Hudson Williams: Interviews</h2>
-            <button class="view-more-btn" id="btn-hudson-interviews" onclick="toggleRow('hudson-interviews')">View More</button>
-        </div>
-        <div class="row-container" id="hudson-interviews"></div>
-    </section>
-
-    <section class="row"  id="connor">
-        <div class="row-header">
-            <h2>Connor Storrie: Short Films</h2>
-            <button class="view-more-btn" id="btn-connor-short-films" onclick="toggleRow('connor-short-films')">View More</button>
-        </div>
-        <div class="row-container" id="connor-short-films"></div>
-
-        <div class="row-header">
-            <h2>Connor Storrie: Interviews</h2>
-            <button class="view-more-btn" id="btn-connor-interviews" onclick="toggleRow('connor-interviews')">View More</button>
-        </div>
-        <div class="row-container" id="connor-interviews"></div>
-    </section>
-
-    <section class="row"  id="hudcon">
-        <div class="row-header">
-            <h2>HudCon: Joint YouTube Clips</h2>
-            <button class="view-more-btn" id="btn-both-youtube" onclick="toggleRow('both-youtube')">View More</button>
-        </div>
-        <div class="row-container" id="both-youtube"></div>
-    </section>
+    <section class="row" id="hudson"></section>
+    <section class="row" id="connor"></section>
+    <section class="row" id="hudcon"></section>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWxheUIbo4UH1zY0r28bIMky5ndww1lueEhgEfkU8SG1JP3EYcqG_h_rUWmKblOiE9/exec";
+        let allData = [];
 
         function cleanUrl(url) {
             if (url.includes('youtube.com/watch?v=')) return url.replace('watch?v=', 'embed/');
-            if (url.includes('youtu.be/')) {
-                const id = url.split('.be/')[1].split('?')[0];
-                return `https://www.youtube.com/embed/${id}`;
-            }
-            if (url.includes('tiktok.com') && !url.includes('embed')) {
-                const videoId = url.split('/video/')[1]?.split('?')[0];
-                if (videoId) return `https://www.tiktok.com/embed/v2/${videoId}?refer=embed`;
-            }
+            if (url.includes('youtu.be/')) return `https://www.youtube.com/embed/${url.split('.be/')[1].split('?')[0]}`;
             return url;
+        }
+
+        function getOrCreateRow(actor, category) {
+            const actorId = actor.toLowerCase() === "both" ? "hudcon" : actor.toLowerCase();
+            const catId = category.toLowerCase().replace(/\s+/g, '-');
+            const rowId = `${actorId}-${catId}`;
+            
+            let container = document.getElementById(rowId);
+            if (!container) {
+                const parentSection = document.getElementById(actorId);
+                if (parentSection) {
+                    parentSection.insertAdjacentHTML('beforeend', `
+                        <div class="row-header">
+                            <h2>${actor}: ${category}</h2>
+                            <button class="view-more-btn" id="btn-${rowId}" onclick="toggleRow('${rowId}')" style="background:none;border:none;color:#aaa;cursor:pointer;">View More</button>
+                        </div>
+                        <div class="row-container" id="${rowId}"></div>
+                    `);
+                    container = document.getElementById(rowId);
+                }
+            }
+            return container;
+        }
+
+        function openCollection(title) {
+            const photos = allData.filter(item => item.title === title && (item.url.match(/\.(jpeg|jpg|gif|png|webp|avif)$/) != null || item.url.includes('imgur.com')));
+            const viewer = document.getElementById('viewer-overlay');
+            const content = document.getElementById('viewer-content');
+            document.getElementById('viewer-title').innerText = title;
+            
+            content.innerHTML = photos.map(p => `<img src="${p.url}">`).join('');
+            viewer.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeViewer() {
+            document.getElementById('viewer-overlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
 
         function toggleRow(id) {
             const container = document.getElementById(id);
             const btn = document.getElementById('btn-' + id);
-            const items = container.querySelectorAll('.card-wrapper');
-            
-            if (container.classList.contains('expanded')) {
-                container.classList.remove('expanded');
-                btn.innerText = "View More";
-                items.forEach((item, index) => {
-                    if (index >= 4) item.classList.add('hidden-item');
-                });
-            } else {
-                container.classList.add('expanded');
-                btn.innerText = "View Less";
-                items.forEach(item => item.classList.remove('hidden-item'));
-            }
-        }
-
-        function filterContent() {
-            let input = document.getElementById('searchInput').value.toLowerCase();
-            let cards = document.getElementsByClassName('card-wrapper');
-            for (let i = 0; i < cards.length; i++) {
-                let title = cards[i].querySelector('.video-title').innerText.toLowerCase();
-                cards[i].classList.toggle('hidden', !title.includes(input));
-            }
+            const isExpanded = container.classList.toggle('expanded');
+            btn.innerText = isExpanded ? "View Less" : "View More";
+            container.querySelectorAll('.card-wrapper').forEach((item, index) => {
+                if (index >= 4) item.classList.toggle('hidden-item', !isExpanded);
+            });
         }
 
         fetch(SCRIPT_URL)
             .then(res => res.json())
             .then(data => {
+                allData = data;
                 document.getElementById('loader').style.display = 'none';
+                
+                // Group photos by title
+                const processedTitles = new Set();
+
                 data.forEach(item => {
-                    let rowId = "";
-                    const url = item.url.toLowerCase();
-                    const isTikTok = url.includes('tiktok.com');
-                    const isImage = url.match(/\.(jpeg|jpg|gif|png|webp|avif)$/) != null || url.includes('imgur.com');
-                    const actor = item.actor.toLowerCase();
-                    const category = item.category.toLowerCase().replace(/\s+/g, '-');
+                    const container = getOrCreateRow(item.actor, item.category);
+                    if (!container) return;
 
-                    if (actor === "both") {
-                        if (isImage) rowId = "both-photos";
-                        else rowId = isTikTok ? "both-edits" : "both-youtube";
-                    } else {
-                        if (isImage) rowId = `${actor}-photos`;
-                        else rowId = isTikTok ? `${actor}-edits` : `${actor}-${category}`;
-                    }
-
-                    const container = document.getElementById(rowId);
-                    if (container) {
-                        const existingItems = container.querySelectorAll('.card-wrapper').length;
-                        const cardClass = isTikTok ? "video-card tiktok-card" : "video-card";
-                        let mediaHTML = isImage 
-                            ? `<img src="${item.url}" loading="lazy">`
-                            : `<iframe src="${cleanUrl(item.url)}" loading="lazy" allowfullscreen scrolling="no"></iframe>`;
-
-                        // Hide items past index 3 (item #4) initially
-                        const hideClass = existingItems >= 4 ? 'hidden-item' : '';
+                    const isImage = item.url.match(/\.(jpeg|jpg|gif|png|webp|avif)$/) != null || item.url.includes('imgur.com');
+                    
+                    if (isImage) {
+                        if (processedTitles.has(item.title)) return;
+                        processedTitles.add(item.title);
+                        
+                        const count = data.filter(d => d.title === item.title).length;
+                        const existingCount = container.querySelectorAll('.card-wrapper').length;
+                        const hideClass = existingCount >= 4 ? 'hidden-item' : '';
 
                         container.innerHTML += `
-                            <div class="card-wrapper ${hideClass}">
-                                <div class="${cardClass}">
-                                    ${mediaHTML}
+                            <div class="card-wrapper ${hideClass}" onclick="openCollection('${item.title.replace(/'/g, "\\'")}')">
+                                <div class="video-card photo-stack">
+                                    <img src="${item.url}" loading="lazy">
+                                    ${count > 1 ? `<span class="collection-badge">${count} Photos</span>` : ''}
                                 </div>
                                 <div class="video-title">${item.title}</div>
-                            </div>
-                        `;
+                            </div>`;
+                    } else {
+                        const existingCount = container.querySelectorAll('.card-wrapper').length;
+                        const hideClass = existingCount >= 4 ? 'hidden-item' : '';
+                        container.innerHTML += `
+                            <div class="card-wrapper ${hideClass}">
+                                <div class="video-card">
+                                    <iframe src="${cleanUrl(item.url)}" loading="lazy" allowfullscreen scrolling="no"></iframe>
+                                </div>
+                                <div class="video-title">${item.title}</div>
+                            </div>`;
                     }
                 });
 
-                // Hide View More buttons if row has 4 or fewer items
-                ['hudson-short-films', 'hudson-interviews', 'connor-short-films', 'connor-interviews', 'both-youtube'].forEach(id => {
-                    const container = document.getElementById(id);
-                    if (container && container.querySelectorAll('.card-wrapper').length <= 4) {
-                        const btn = document.getElementById('btn-' + id);
+                document.querySelectorAll('.row-container').forEach(c => {
+                    if (c.querySelectorAll('.card-wrapper').length <= 4) {
+                        const btn = document.getElementById('btn-' + c.id);
                         if (btn) btn.style.display = 'none';
                     }
                 });
@@ -228,4 +210,3 @@
     </script>
 </body>
 </html>
-
