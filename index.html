@@ -152,56 +152,77 @@
             });
         }
 
-        fetch(SCRIPT_URL)
-            .then(res => res.json())
-            .then(data => {
-                allData = data;
-                document.getElementById('loader').style.display = 'none';
+        function filterContent() {
+            let q = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.card-wrapper').forEach(card => {
+                let txt = card.querySelector('.video-title').innerText.toLowerCase();
+                card.style.display = txt.includes(q) ? 'flex' : 'none';
+            });
+        }
+
+        function renderData(data) {
+            allData = data;
+            document.getElementById('loader').style.display = 'none';
+            const processedTitles = new Set();
+
+            data.forEach(item => {
+                const container = getOrCreateRow(item.actor, item.category);
+                if (!container) return;
+
+                const isImage = item.url.match(/\.(jpeg|jpg|gif|png|webp|avif)$/) != null || item.url.includes('imgur.com');
                 
-                // Group photos by title
-                const processedTitles = new Set();
-
-                data.forEach(item => {
-                    const container = getOrCreateRow(item.actor, item.category);
-                    if (!container) return;
-
-                    const isImage = item.url.match(/\.(jpeg|jpg|gif|png|webp|avif)$/) != null || item.url.includes('imgur.com');
+                if (isImage) {
+                    if (processedTitles.has(item.title)) return;
+                    processedTitles.add(item.title);
                     
-                    if (isImage) {
-                        if (processedTitles.has(item.title)) return;
-                        processedTitles.add(item.title);
-                        
-                        const count = data.filter(d => d.title === item.title).length;
-                        const existingCount = container.querySelectorAll('.card-wrapper').length;
-                        const hideClass = existingCount >= 4 ? 'hidden-item' : '';
+                    const count = data.filter(d => d.title === item.title).length;
+                    const existingCount = container.querySelectorAll('.card-wrapper').length;
+                    const hideClass = existingCount >= 4 ? 'hidden-item' : '';
 
-                        container.innerHTML += `
-                            <div class="card-wrapper ${hideClass}" onclick="openCollection('${item.title.replace(/'/g, "\\'")}')">
-                                <div class="video-card photo-stack">
-                                    <img src="${item.url}" loading="lazy">
-                                    ${count > 1 ? `<span class="collection-badge">${count} Photos</span>` : ''}
-                                </div>
-                                <div class="video-title">${item.title}</div>
-                            </div>`;
-                    } else {
-                        const existingCount = container.querySelectorAll('.card-wrapper').length;
-                        const hideClass = existingCount >= 4 ? 'hidden-item' : '';
-                        container.innerHTML += `
-                            <div class="card-wrapper ${hideClass}">
-                                <div class="video-card">
-                                    <iframe src="${cleanUrl(item.url)}" loading="lazy" allowfullscreen scrolling="no"></iframe>
-                                </div>
-                                <div class="video-title">${item.title}</div>
-                            </div>`;
-                    }
-                });
+                    container.innerHTML += `
+                        <div class="card-wrapper ${hideClass}" onclick="openCollection('${item.title.replace(/'/g, "\\'")}')">
+                            <div class="video-card photo-stack">
+                                <img src="${item.url}" loading="lazy">
+                                ${count > 1 ? `<span class="collection-badge">${count} Photos</span>` : ''}
+                            </div>
+                            <div class="video-title">${item.title}</div>
+                        </div>`;
+                } else {
+                    const existingCount = container.querySelectorAll('.card-wrapper').length;
+                    const hideClass = existingCount >= 4 ? 'hidden-item' : '';
+                    container.innerHTML += `
+                        <div class="card-wrapper ${hideClass}">
+                            <div class="video-card">
+                                <iframe src="${cleanUrl(item.url)}" loading="lazy" allowfullscreen scrolling="no"></iframe>
+                            </div>
+                            <div class="video-title">${item.title}</div>
+                        </div>`;
+                }
+            });
 
-                document.querySelectorAll('.row-container').forEach(c => {
-                    if (c.querySelectorAll('.card-wrapper').length <= 4) {
-                        const btn = document.getElementById('btn-' + c.id);
-                        if (btn) btn.style.display = 'none';
-                    }
-                });
+            document.querySelectorAll('.row-container').forEach(c => {
+                if (c.querySelectorAll('.card-wrapper').length <= 4) {
+                    const btn = document.getElementById('btn-' + c.id);
+                    if (btn) btn.style.display = 'none';
+                }
+            });
+        }
+
+        // Logic: Try Google Sheets first, fall back to data.json
+        fetch(SCRIPT_URL)
+            .then(res => {
+                if (!res.ok) throw new Error();
+                return res.json();
+            })
+            .then(data => renderData(data))
+            .catch(() => {
+                console.warn("Using backup data...");
+                fetch('data.json')
+                    .then(res => res.json())
+                    .then(data => renderData(data))
+                    .catch(() => {
+                        document.getElementById('loader').innerHTML = "<p>Error loading archive.</p>";
+                    });
             });
 
         window.addEventListener('scroll', () => {
