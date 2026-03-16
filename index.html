@@ -58,6 +58,44 @@
         #loader { display: block; margin: 50px auto; border: 5px solid #333; border-top: 5px solid var(--accent-red); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .hidden-item { display: none !important; }
+        /* Footer Style */
+        footer {
+            background: #111;
+            padding: 40px 4% 20px;
+            margin-top: 50px;
+            border-top: 1px solid #333;
+            color: #777;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .footer-links a:hover { color: var(--accent-red); }
+        .back-to-top {
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+        .disclaimer {
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -93,6 +131,19 @@
     <section class="row" id="hudson"></section>
     <section class="row" id="connor"></section>
     <section class="row" id="hudcon"></section>
+
+    <footer>
+        <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Back to Top</button>
+        <div class="footer-links">
+            <a href="#hudson">Hudson</a>
+            <a href="#connor">Connor</a>
+            <a href="#hudcon">HudCon</a>
+        </div>
+        <div class="disclaimer">
+            <p>© 2026 Rivalry Hub | A Fan-Driven Digital Archive</p>
+            <p>This website is a non-profit project dedicated to celebrating the work of Hudson Storrie and Connor Williams. No copyright infringement is intended. All media belongs to their respective owners. ❤️🌞</p>
+        </div>
+    </footer>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWxheUIbo4UH1zY0r28bIMky5ndww1lueEhgEfkU8SG1JP3EYcqG_h_rUWmKblOiE9/exec";
