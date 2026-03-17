@@ -107,6 +107,41 @@
             margin: 0 auto;
             line-height: 1.4;
         }
+        /* Mobile Responsive Search */
+@media (max-width: 600px) {
+    nav {
+        flex-direction: column;
+        height: auto;
+        padding: 10px 4%;
+        background: rgba(0,0,0,0.95);
+    }
+    .nav-left {
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    .logo {
+        font-size: 1.4rem;
+        margin-right: 10px;
+    }
+    .nav-links {
+        gap: 10px;
+    }
+    .nav-links a {
+        font-size: 0.8rem;
+    }
+    .search-container {
+        width: 100%; /* Makes search bar full width on mobile */
+        box-sizing: border-box;
+    }
+    #searchInput {
+        width: 100% !important; /* Forces it to stay visible */
+        font-size: 1rem; /* Better for mobile typing */
+    }
+    .hero h1 {
+        font-size: 2.5rem; /* Smaller title so it fits on phone screens */
+    }
+}
     </style>
 </head>
 <body>
