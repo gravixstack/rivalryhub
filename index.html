@@ -10,7 +10,17 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rivalry Hub | Hudson & Connor</title>
+    
+    <title>Rivalry Hub | Hudson & Connor Digital Archive</title>
+    <meta name="description" content="The definitive digital archive for Hudson Williams and Connor Storrie. Explore the short films, interviews, and photo collections.">
+    <meta name="keywords" content="Hudson Williams, Connor Storrie, Heated Rivalry, Rivalry Hub, Storrie-Williams, Short Films, Digital Archive">
+    
+    <meta property="og:title" content="Rivalry Hub | Hudson & Connor Archive">
+    <meta property="og:description" content="Every film, interview, and photo of Hudson and Connor in one place. ❤️🌞">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2000">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --main-bg: #141414; --accent-red: #E50914; --text-white: #fff; }
@@ -58,6 +68,7 @@
         #loader { display: block; margin: 50px auto; border: 5px solid #333; border-top: 5px solid var(--accent-red); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .hidden-item { display: none !important; }
+        
         /* Footer Style */
         footer {
             background: #111;
@@ -141,7 +152,7 @@
         </div>
         <div class="disclaimer">
             <p>© 2026 Rivalry Hub | A Fan-Driven Digital Archive</p>
-            <p>This website is a non-profit project dedicated to celebrating the work of Hudson Williams and Connor Storrie. No copyright infringement is intended. All media belongs to their respective owners. ❤️🌞      Love y'all uhh🤗🫰</p>
+            <p>This website is a non-profit project dedicated to celebrating the work of Hudson Williams and Connor Storrie. No copyright infringement is intended. All media belongs to their respective owners. ❤️🌞 <br>Love y'all uhh🤗🫰</p>
         </div>
     </footer>
 
@@ -205,9 +216,35 @@
 
         function filterContent() {
             let q = document.getElementById('searchInput').value.toLowerCase();
+            
             document.querySelectorAll('.card-wrapper').forEach(card => {
                 let txt = card.querySelector('.video-title').innerText.toLowerCase();
-                card.style.display = txt.includes(q) ? 'flex' : 'none';
+                if (txt.includes(q)) {
+                    card.style.display = 'flex';
+                    card.classList.remove('hidden-item');
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.querySelectorAll('.row-container').forEach(container => {
+                const rowId = container.id;
+                const header = document.querySelector(`[id="btn-${rowId}"]`).parentElement;
+                const hasVisibleCards = Array.from(container.children).some(card => card.style.display === 'flex');
+
+                if (hasVisibleCards || q === "") {
+                    container.style.display = 'flex';
+                    header.style.display = 'flex';
+                    const btn = document.getElementById('btn-' + rowId);
+                    if (q !== "") {
+                        btn.style.display = 'none';
+                    } else if (container.querySelectorAll('.card-wrapper').length > 4) {
+                        btn.style.display = 'block';
+                    }
+                } else {
+                    container.style.display = 'none';
+                    header.style.display = 'none';
+                }
             });
         }
 
@@ -259,7 +296,6 @@
             });
         }
 
-        // Logic: Try Google Sheets first, fall back to data.json
         fetch(SCRIPT_URL)
             .then(res => {
                 if (!res.ok) throw new Error();
@@ -267,7 +303,6 @@
             })
             .then(data => renderData(data))
             .catch(() => {
-                console.warn("Using backup data...");
                 fetch('data.json')
                     .then(res => res.json())
                     .then(data => renderData(data))
